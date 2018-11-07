@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <EditTextPreference
+        android:defaultValue="http://billroth.org"
+        android:key="edit_text_preference_1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:summary="@string/pref_host_summary_text"
+        android:title="@string/pref_host_text" />
+    <EditTextPreference
+        android:defaultValue="60"
+        android:key="edit_text_preference_2"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:summary="@string/pref_scan_summary_text"
+        android:title="@string/pref_scan_time_text" />
+</PreferenceScreen>

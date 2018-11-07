@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".MainActivity"
+    tools:showIn="@layout/activity_main">
+
+    <TextView
+        android:id="@+id/label_latitude"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/label_lat"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/label_longitude"
+        app:layout_constraintTop_toBottomOf="@+id/label_longitude" />
+
+    <TextView
+        android:id="@+id/label_longitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/label_long"
+        android:textAlignment="textEnd"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/value_longitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/value_double_0"
+        android:textAlignment="viewStart"
+        app:layout_constraintStart_toEndOf="@+id/label_longitude"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/value_latitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/value_double_0"
+        android:textAlignment="viewStart"
+        app:layout_constraintStart_toStartOf="@+id/value_longitude"
+        app:layout_constraintTop_toBottomOf="@+id/value_longitude" />
+
+    <TextView
+        android:id="@+id/label_altitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/alititude_string"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/label_latitude"
+        app:layout_constraintTop_toBottomOf="@+id/label_latitude" />
+
+    <TextView
+        android:id="@+id/label_accuracy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/accuracy_string"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/label_altitude"
+        app:layout_constraintTop_toBottomOf="@+id/label_altitude" />
+
+    <TextView
+        android:id="@+id/value_altitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/value_double_0"
+        android:textAlignment="viewStart"
+        app:layout_constraintStart_toStartOf="@+id/value_latitude"
+        app:layout_constraintTop_toBottomOf="@+id/value_latitude" />
+
+    <TextView
+        android:id="@+id/value_accuracy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/value_double_0"
+        android:textAlignment="viewStart"
+        app:layout_constraintStart_toStartOf="@+id/value_altitude"
+        app:layout_constraintTop_toBottomOf="@+id/value_altitude" />
+
+    <TextView
+        android:id="@+id/label_epoc_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/label_epoch_time"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/label_accuracy"
+        app:layout_constraintTop_toBottomOf="@+id/label_accuracy" />
+
+    <TextView
+        android:id="@+id/value_epoch_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/epoch_zero_string"
+        android:textAlignment="viewStart"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="@+id/value_accuracy"
+        app:layout_constraintTop_toBottomOf="@+id/value_accuracy" />
+
+    <TextView
+        android:id="@+id/label_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="@string/status_string"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/label_epoc_time"
+        app:layout_constraintTop_toBottomOf="@+id/label_epoc_time" />
+
+    <TextView
+        android:id="@+id/value_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="@string/status_text_string"
+        android:textAlignment="viewStart"
+        app:layout_constraintStart_toEndOf="@+id/label_status"
+        app:layout_constraintTop_toTopOf="@+id/label_status" />
+</android.support.constraint.ConstraintLayout>
