@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
     private LocationManager locationManager;
     private NestedLocationListener locationListener;
     protected double lon=0, lat=0,altitude=0;
-    protected float accuracy=0;
+    protected float accuracy=0,speed,speed_accuracy;
     protected long epochtime=0;
     //
     protected String TAG;
@@ -71,12 +71,16 @@ public class MainActivity extends AppCompatActivity {
             altitude = loc.getAltitude();
             accuracy = loc.getAccuracy();
             epochtime = loc.getTime();
+            speed = loc.getSpeed();
+            //speed_accuracy = loc.getSpeedAccuracyMetersPerSecond();
+
 
             ((TextView) findViewById(R.id.value_longitude)).setText(Double.toString(lon));
             ((TextView) findViewById(R.id.value_latitude)).setText(Double.toString(lat));
             ((TextView) findViewById(R.id.value_altitude)).setText(String.format("%.3f",altitude));
             ((TextView) findViewById(R.id.value_accuracy)).setText(Float.toString(accuracy));
             ((TextView) findViewById(R.id.value_epoch_time)).setText(Long.toString(epochtime));
+            ((TextView) findViewById(R.id.value_epoch_time)).setText(Float.toString(speed));
 
 
         }
@@ -92,10 +96,10 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         // TODO: Get rid of FAB
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
