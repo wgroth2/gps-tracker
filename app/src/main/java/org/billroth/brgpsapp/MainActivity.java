@@ -10,7 +10,9 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.os.ConfigurationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -18,6 +20,19 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+import java.util.Locale;
 
 import static org.billroth.brgpsapp.R.string.error_no_privs;
 
@@ -74,18 +89,74 @@ public class MainActivity extends AppCompatActivity {
             speed = loc.getSpeed();
             //speed_accuracy = loc.getSpeedAccuracyMetersPerSecond();
 
-
+            // TODO: Set up local printing
+            //
+            Locale locale = ConfigurationCompat.getLocales(this.getResources().getConfiguration()).get(0);
             ((TextView) findViewById(R.id.value_longitude)).setText(Double.toString(lon));
             ((TextView) findViewById(R.id.value_latitude)).setText(Double.toString(lat));
-            ((TextView) findViewById(R.id.value_altitude)).setText(String.format("%.3f",altitude));
+            ((TextView) findViewById(R.id.value_altitude)).setText(String.format(locale,"%.3f",altitude));
             ((TextView) findViewById(R.id.value_accuracy)).setText(Float.toString(accuracy));
             ((TextView) findViewById(R.id.value_epoch_time)).setText(Long.toString(epochtime));
-            ((TextView) findViewById(R.id.value_epoch_time)).setText(Float.toString(speed));
+            ((TextView) findViewById(R.id.value_speed)).setText(Float.toString(speed));
+
+            try {
+                sendData("http://billroth.net/jsn.php", buildJsonObject(loc));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
 
         }
     }
+    //
+    //
+    protected void sendData(String url, JSONObject obj) {
+        // Instantiate the RequestQueue.
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.POST, url, obj, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.v(TAG,"JSON response received");
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // TODO: Handle error
+                        Log.v(TAG,"JSON Error received");
+
+                    }
+                });
+
+        // Access the RequestQueue through your singleton class.
+        String s = jsonObjectRequest.getBodyContentType();
+        queue.add(jsonObjectRequest);
+
+    }
+    //
+    //
+    private JSONObject buildJsonObject(Location loc) throws JSONException {
+
+        JSONObject jsonObject = new JSONObject();
+        Locale locale = ConfigurationCompat.getLocales(getApplicationContext().getResources().getConfiguration()).get(0);
+        jsonObject.put("type", "Location");
+        jsonObject.put("longitude", String.format(locale, "%.6f", loc.getLongitude()));
+        jsonObject.put("latitude", String.format(locale, "%.6f", loc.getLatitude()));
+        jsonObject.put("altitude", String.format(locale, "%.3f", loc.getAltitude()));
+        jsonObject.put("accuracy", String.format(locale, "%.3f", loc.getAccuracy()));
+        jsonObject.put("time", String.format(locale, "%d", loc.getTime()));
+
+
+        return jsonObject;
+    }
+
+
     private boolean isBetterLocation(Location loc) {
+        // TODO: Finish this so we do not send more than we need to
         return true;
     }
     @Override
@@ -138,7 +209,8 @@ public class MainActivity extends AppCompatActivity {
         locationListener = new NestedLocationListener();
 
         // Register the listener with the Location Manager to receive location updates
-
+        // TODO: Set this to the time in the preferences.
+        //
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10 * 1000 , 0, locationListener);
         Log.v(TAG, "Location Services Requested");
     }
