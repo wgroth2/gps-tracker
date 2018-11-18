@@ -7,6 +7,8 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -107,6 +109,24 @@ public class MainActivity extends AppCompatActivity {
 
 
         }
+    }
+    //
+    //
+    protected boolean checkNetworkConnection() {
+        ConnectivityManager connMgr = (ConnectivityManager)
+                this.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        boolean isConnected = false;
+        if (networkInfo != null && (isConnected = networkInfo.isConnected())) {
+            // show "Connected" & type of network "WIFI or MOBILE"
+            ((TextView) findViewById(R.id.value_network_status)).setText("Connected");
+            isConnected =  true;
+        } else {
+            // Show Not connected
+            ((TextView) findViewById(R.id.value_network_status)).setText("Not Connected");
+        }
+        return isConnected;
     }
     //
     //

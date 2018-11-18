@@ -93,5 +93,10 @@
     <string name="error_no_privs">You do not have permission to access GPS. Please set app permissions.</string>
     <string name="text_speed">Speed</string>
     <string name="text_speed_accuracy">Spd. Acc.</string>
+    <string name="title_networkstatus_text">Network</string>
+    <string name="value_unknown">Unknown</string>
+    <string name="title_Last_Serv_resp" >Serv Resp</string>
+    <string name="value_connected">Connected</string>
+    <string name="value_not_connected">Not Connected</string>
 
 </resources>

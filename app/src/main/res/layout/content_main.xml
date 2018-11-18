@@ -150,4 +150,42 @@
         app:layout_constraintStart_toStartOf="@+id/value_epoch_time"
         app:layout_constraintTop_toBottomOf="@+id/value_epoch_time" />
 
+    <TextView
+        android:id="@+id/label_networkstatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/title_networkstatus_text"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/label_status"
+        app:layout_constraintTop_toBottomOf="@+id/label_status" />
+
+    <TextView
+        android:id="@+id/value_network_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/value_unknown"
+        app:layout_constraintStart_toStartOf="@+id/value_status"
+        app:layout_constraintTop_toBottomOf="@+id/value_status" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/title_Last_Serv_resp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/label_networkstatus"
+        app:layout_constraintTop_toBottomOf="@+id/label_networkstatus" />
+
+    <TextView
+        android:id="@+id/value_serv_resp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/value_unknown"
+        app:layout_constraintStart_toStartOf="@+id/value_network_status"
+        app:layout_constraintTop_toBottomOf="@+id/value_network_status" />
+
 </android.support.constraint.ConstraintLayout>
