@@ -91,5 +91,7 @@
     <string name="status_string">Status</string>
     <string name="status_text_string">Status info</string>
     <string name="error_no_privs">You do not have permission to access GPS. Please set app permissions.</string>
+    <string name="text_speed">Speed</string>
+    <string name="text_speed_accuracy">Spd. Acc.</string>
 
 </resources>

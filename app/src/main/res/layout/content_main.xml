@@ -119,16 +119,35 @@
         android:layout_marginTop="24dp"
         android:text="@string/status_string"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/label_epoc_time"
-        app:layout_constraintTop_toBottomOf="@+id/label_epoc_time" />
+        app:layout_constraintEnd_toEndOf="@+id/label_speed"
+        app:layout_constraintTop_toBottomOf="@+id/label_speed" />
 
     <TextView
         android:id="@+id/value_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
         android:text="@string/status_text_string"
         android:textAlignment="viewStart"
-        app:layout_constraintStart_toEndOf="@+id/label_status"
+        app:layout_constraintStart_toStartOf="@+id/value_speed"
         app:layout_constraintTop_toTopOf="@+id/label_status" />
+
+    <TextView
+        android:id="@+id/label_speed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/text_speed"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/label_epoc_time"
+        app:layout_constraintTop_toBottomOf="@+id/label_epoc_time" />
+
+    <TextView
+        android:id="@+id/value_speed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/value_double_0"
+        app:layout_constraintStart_toStartOf="@+id/value_epoch_time"
+        app:layout_constraintTop_toBottomOf="@+id/value_epoch_time" />
+
 </android.support.constraint.ConstraintLayout>
