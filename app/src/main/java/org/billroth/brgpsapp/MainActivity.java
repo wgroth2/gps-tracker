@@ -74,40 +74,44 @@ public class MainActivity extends AppCompatActivity {
     protected float accuracy=0,speed,speed_accuracy;
     protected long epochtime=0;
     //
+    protected final boolean debug = true;
     protected String TAG;
+    protected Location currentBestLocation = null;
+
 
     // TODO: Define textviews for items to update.
 
     private void makeUseOfNewLocation(Location loc) {
         // Set Long late
 
-        if(isBetterLocation(loc)) {
-            Log.v(TAG, "Setting new location");
+        if(isBetterLocation(loc,currentBestLocation)) {
+            currentBestLocation = loc;
+            if (debug) Log.v(TAG, "Setting new location");
             lon = loc.getLongitude();
             lat = loc.getLatitude();
             altitude = loc.getAltitude();
             accuracy = loc.getAccuracy();
             epochtime = loc.getTime();
             speed = loc.getSpeed();
-            //speed_accuracy = loc.getSpeedAccuracyMetersPerSecond();
+           //speed_accuracy = loc.getSpeedAccuracyMetersPerSecond();
 
             // TODO: Set up locale printing
             //
             Locale locale = ConfigurationCompat.getLocales(this.getResources().getConfiguration()).get(0);
-            ((TextView) findViewById(R.id.value_longitude)).setText(Double.toString(lon));
-            ((TextView) findViewById(R.id.value_latitude)).setText(Double.toString(lat));
+            ((TextView) findViewById(R.id.value_longitude)).setText(String.format(locale,"%.6f",lon));
+            ((TextView) findViewById(R.id.value_latitude)).setText(String.format(locale,"%.6f",lat));
             ((TextView) findViewById(R.id.value_altitude)).setText(String.format(locale,"%.3f",altitude));
-            ((TextView) findViewById(R.id.value_accuracy)).setText(Float.toString(accuracy));
-            ((TextView) findViewById(R.id.value_epoch_time)).setText(Long.toString(epochtime));
-            ((TextView) findViewById(R.id.value_speed)).setText(Float.toString(speed));
+            ((TextView) findViewById(R.id.value_accuracy)).setText(String.format(locale,"%.3f",accuracy));
+            ((TextView) findViewById(R.id.value_epoch_time)).setText(String.format(locale,"%d",epochtime));
+            ((TextView) findViewById(R.id.value_speed)).setText(String.format(locale,"%.3f",speed));
 
             try {
                 sendData("http://billroth.net/jsn.php", buildJsonObject(loc));
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
-
+        } else {
+            if (debug) Log.v(TAG,"Location not better than one before");
         }
     }
     //
@@ -173,12 +177,67 @@ public class MainActivity extends AppCompatActivity {
 
         return jsonObject;
     }
+//
+    //
+    //
+    private static final int TWO_MINUTES = 1000 * 60 * 2;
 
+    /** Determines whether one Location reading is better than the current Location fix
+     * @param location  The new Location that you want to evaluate
+     * @param currentBestLocation  The current Location fix, to which you want to compare the new one
+     */
+    protected boolean isBetterLocation(Location location, Location currentBestLocation) {
+        if (currentBestLocation == null) {
+            // A new location is always better than no location
+            return true;
+        }
 
-    private boolean isBetterLocation(Location loc) {
-        // TODO: Finish this so we do not send more than we need to
-        return true;
+        // Check whether the new location fix is newer or older
+        long timeDelta = location.getTime() - currentBestLocation.getTime();
+        boolean isSignificantlyNewer = timeDelta > TWO_MINUTES;
+        boolean isSignificantlyOlder = timeDelta < -TWO_MINUTES;
+        boolean isNewer = timeDelta > 0;
+
+        // If it's been more than two minutes since the current location, use the new location
+        // because the user has likely moved
+        if (isSignificantlyNewer) {
+            return true;
+            // If the new location is more than two minutes older, it must be worse
+        } else if (isSignificantlyOlder) {
+            return false;
+        }
+
+        // Check whether the new location fix is more or less accurate
+        int accuracyDelta = (int) (location.getAccuracy() - currentBestLocation.getAccuracy());
+        boolean isLessAccurate = accuracyDelta > 0;
+        boolean isMoreAccurate = accuracyDelta < 0;
+        boolean isSignificantlyLessAccurate = accuracyDelta > 200;
+
+        // Check if the old and new location are from the same provider
+        boolean isFromSameProvider = isSameProvider(location.getProvider(),
+                currentBestLocation.getProvider());
+
+        // Determine location quality using a combination of timeliness and accuracy
+        if (isMoreAccurate) {
+            return true;
+        } else if (isNewer && !isLessAccurate) {
+            return true;
+        } else if (isNewer && !isSignificantlyLessAccurate && isFromSameProvider) {
+            return true;
+        }
+        return false;
     }
+
+    /** Checks whether two providers are the same */
+    private boolean isSameProvider(String provider1, String provider2) {
+        if (provider1 == null) {
+            return provider2 == null;
+        }
+        return provider1.equals(provider2);
+    }
+    //
+    //
+    //
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
