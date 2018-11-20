@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
             speed = loc.getSpeed();
             //speed_accuracy = loc.getSpeedAccuracyMetersPerSecond();
 
-            // TODO: Set up local printing
+            // TODO: Set up locale printing
             //
             Locale locale = ConfigurationCompat.getLocales(this.getResources().getConfiguration()).get(0);
             ((TextView) findViewById(R.id.value_longitude)).setText(Double.toString(lon));
