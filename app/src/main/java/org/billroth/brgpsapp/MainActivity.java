@@ -95,8 +95,6 @@ public class MainActivity extends AppCompatActivity {
             speed = loc.getSpeed();
            //speed_accuracy = loc.getSpeedAccuracyMetersPerSecond();
 
-            // TODO: Set up locale printing
-            //
             Locale locale = ConfigurationCompat.getLocales(this.getResources().getConfiguration()).get(0);
             ((TextView) findViewById(R.id.value_longitude)).setText(String.format(locale,"%.6f",lon));
             ((TextView) findViewById(R.id.value_latitude)).setText(String.format(locale,"%.6f",lat));
