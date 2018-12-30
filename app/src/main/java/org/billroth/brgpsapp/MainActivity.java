@@ -14,6 +14,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.os.ConfigurationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -22,6 +23,7 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -36,7 +38,7 @@ import org.json.JSONObject;
 
 import java.util.Locale;
 
-import static org.billroth.brgpsapp.R.string.error_no_privs;
+// import static org.billroth.brgpsapp.R.string.error_no_privs;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -111,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         } else {
+            // Todo only seeing good locations
             if (debug) Log.v(TAG,"Location not better than one before");
         }
     }
@@ -144,15 +147,19 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onResponse(JSONObject response) {
+                        // if successful do nothing
                         Log.v(TAG,"JSON response received");
+                        // TODO: Get proper error reponses here.
+                        ((TextView) findViewById(R.id.value_serv_resp)).setText("good");
                     }
                 }, new Response.ErrorListener() {
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        // TODO: Handle error
-                        Log.v(TAG,"JSON Error received");
-
+                        // TODO: Handle error, put error in log. Maybe send toast
+                        String msg;
+                        Log.v(TAG,msg = "JSON Error received" + error.getLocalizedMessage());
+                        ((TextView) findViewById(R.id.value_serv_resp)).setText(msg);
                     }
                 });
 
@@ -162,17 +169,20 @@ public class MainActivity extends AppCompatActivity {
 
     }
     //
-    //
     private JSONObject buildJsonObject(Location loc) throws JSONException {
 
         JSONObject jsonObject = new JSONObject();
         Locale locale = ConfigurationCompat.getLocales(getApplicationContext().getResources().getConfiguration()).get(0);
         jsonObject.put("type", "Location");
-        jsonObject.put("longitude", String.format(locale, "%.6f", loc.getLongitude()));
-        jsonObject.put("latitude", String.format(locale, "%.6f", loc.getLatitude()));
-        jsonObject.put("altitude", String.format(locale, "%.3f", loc.getAltitude()));
-        jsonObject.put("accuracy", String.format(locale, "%.3f", loc.getAccuracy()));
-        jsonObject.put("time", String.format(locale, "%d", loc.getTime()));
+        jsonObject.put("longitude", loc.getLongitude());
+        jsonObject.put("latitude", loc.getLatitude());
+        jsonObject.put("altitude", loc.getAltitude());
+        jsonObject.put("accuracy", loc.getAccuracy());
+        jsonObject.put("speed", loc.getSpeed());
+        jsonObject.put("epochtime",(long) loc.getTime() / 1000);
+        jsonObject.put("tags", "location-update");
+        jsonObject.put("userid", 0);
+
 
 
         return jsonObject;
@@ -220,6 +230,7 @@ public class MainActivity extends AppCompatActivity {
         // Determine location quality using a combination of timeliness and accuracy
         if (isMoreAccurate) {
             return true;
+            // changing below: isNewer && !isLessAccurate
         } else if (isNewer && !isLessAccurate) {
             return true;
         } else if (isNewer && !isSignificantlyLessAccurate && isFromSameProvider) {
@@ -257,8 +268,17 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+        // Here, thisActivity is the current activity
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
 
-        startLocationServices();
+                // No explanation needed; request the permission
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},1);
+
+            } else
+                startLocationServices();
 
         Log.v(TAG, "onCreate done");
     }
@@ -320,6 +340,24 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case 1:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    //permission with request code 1 granted
+                    Toast.makeText(this, "Permission Granted" , Toast.LENGTH_LONG).show();
+                    startLocationServices();
+                } else {
+                    //permission with request code 1 was not granted
+                    Toast.makeText(this, "Permission was not Granted" , Toast.LENGTH_LONG).show();
+                }
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
     }
     // This callback is called only when there is a saved instance that is previously saved by using
 // onSaveInstanceState(). We restore some state in onCreate(), while we can optionally restore
