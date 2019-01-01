@@ -1,3 +1,37 @@
+
+
+/*
+ * *
+ *  * Created by Bill Roth on 11/1/18 4:01 PM
+ *  * Copyright (c) 2018 . All rights reserved.
+ *  * Last modified 12/31/18 4:01 PM
+ *
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions are met:
+ *
+ *  1. Redistributions of source code must retain the above copyright notice, this
+ *     list of conditions and the following disclaimer.
+ *  2. Redistributions in binary form must reproduce the above copyright notice,
+ *     this list of conditions and the following disclaimer in the documentation
+ *     and/or other materials provided with the distribution.
+ *
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ *  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ *  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ *  ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ *  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ *  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *  The views and conclusions contained in the software and documentation are those
+ *  of the authors and should not be interpreted as representing official policies,
+ *  either expressed or implied, of the containing project.
+ *
+ */
+
 package org.billroth.brgpsapp;
 
 import android.Manifest;
@@ -164,6 +198,7 @@ public class MainActivity extends AppCompatActivity {
         // Access the RequestQueue through your singleton class.
         String s = jsonObjectRequest.getBodyContentType();
         queue.add(jsonObjectRequest);
+        Log.v(TAG,"Request made");
 
     }
     //
@@ -198,6 +233,11 @@ public class MainActivity extends AppCompatActivity {
         if (currentBestLocation == null) {
             // A new location is always better than no location
             return true;
+        }
+        if(isSamePlace(location,currentBestLocation)) {
+            // same as last time
+            Log.v(TAG,"Same as last time");
+            return false;
         }
 
         // Check whether the new location fix is newer or older
@@ -236,7 +276,14 @@ public class MainActivity extends AppCompatActivity {
         }
         return false;
     }
-
+    private boolean isSamePlace(Location one, Location two) {
+        if(one.getLongitude() == two.getLongitude() &&
+                one.getLatitude() == two.getLatitude() &&
+                one.getAltitude() == two.getAltitude())
+            return true;
+        else
+            return false;
+    }
     /** Checks whether two providers are the same */
     private boolean isSameProvider(String provider1, String provider2) {
         if (provider1 == null) {
@@ -252,12 +299,12 @@ public class MainActivity extends AppCompatActivity {
 
         TAG = getResources().getString(R.string.app_name);
         //
-
+        Log.v(TAG,"OnCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        // TODO: Get rid of FAB
+        // TODO: Get rid of FAB, or connect to SMS.
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -275,12 +322,14 @@ public class MainActivity extends AppCompatActivity {
                 ActivityCompat.requestPermissions(this,
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},1);
 
-            } else
-                startLocationServices();
+            }
+
 
         Log.v(TAG, "onCreate done");
     }
-
+    //
+    // TODO: COnsider rewrite: https://stackoverflow.com/questions/43318968/how-to-make-a-simple-tracking-android-app-using-android-studio
+    //
     private void startLocationServices() {
         //
         // check for permissions. If we don't have them, as for them. If we don't get them, pop up a messaging then exit
@@ -308,9 +357,16 @@ public class MainActivity extends AppCompatActivity {
         // Register the listener with the Location Manager to receive location updates
         // TODO: Set this to the time in the preferences.
         //
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10 * 1000 , 0, locationListener);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,  60 * 1000 , 0, locationListener);
         Log.v(TAG, "Location Services Requested");
     }
+    //
+    //
+    //
+    private void stopLocationServices() {
+        locationManager.removeUpdates(locationListener);
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -379,31 +435,29 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         Log.v(TAG,"OnStart");
-
+        startLocationServices();
         super.onStart();
     }
     @Override
     protected void onResume() {
-        Log.v(TAG,"OnREsume");
+        Log.v(TAG,"OnResume");
 
         super.onResume();
     }
     @Override
     protected void onPause() {
         Log.v(TAG,"OnPause");
-
         super.onPause();
     }
     @Override
     protected void onStop() {
         Log.v(TAG,"OnStop");
-
+        stopLocationServices();
         super.onStop();
     }
     @Override
     protected void onDestroy() {
         Log.v(TAG,"OnDestroy");
-
         super.onDestroy();
     }
 }
