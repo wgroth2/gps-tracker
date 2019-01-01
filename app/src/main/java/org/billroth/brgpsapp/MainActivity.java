@@ -324,7 +324,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
 
-
         Log.v(TAG, "onCreate done");
     }
     //
